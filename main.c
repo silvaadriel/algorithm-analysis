@@ -10,6 +10,7 @@ typedef struct Instance {
 
 Instance instanceTable[25];
 
+char *inputText();
 FILE *openFile();
 void sortDescOrder();
 
@@ -20,13 +21,14 @@ void main() {
   char string[200];
   char row[50];
   char *tmp;
-  char fileName[60];
+  char *fileName;
   int i = 0;
 
-  printf("Enter filename: ");
-  scanf("%s", &fileName);
+  fileName = inputText("Enter csv filename: ", 60);
 
   csvFile = openFile(fileName, "r", ".csv");
+
+  free(fileName);
 
   while (fgets(string, sizeof(string), csvFile) != NULL) {
     tmp = strtok(string, ",");
@@ -50,6 +52,15 @@ void main() {
 
   fclose(csvFile);
   system("pause");
+}
+
+char *inputText(char printText[], int inputLength) {
+  char *input = (char*) malloc(inputLength * sizeof(char));
+
+  printf("%s", printText);
+  gets(input);
+
+  return input;
 }
 
 FILE *openFile(char fileName[], char accessMode[], char extension[]) {
