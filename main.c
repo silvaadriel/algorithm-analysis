@@ -48,6 +48,7 @@ void main() {
     printf("%s %i\n", instanceTable[i].text, instanceTable[i].score);
   }
 
+  fclose(csvFile);
   system("pause");
 }
 
