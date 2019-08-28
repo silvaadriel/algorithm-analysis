@@ -8,19 +8,17 @@ typedef struct Instance {
   int score;
 } Instance;
 
-Instance instanceTable[25];
-
 char *inputText();
 FILE *openFile();
 void sortDescOrder();
+Instance *parseCsv();
 
 void main() {
   setlocale (LC_ALL, "");
+	
+	Instance *instanceTable;
 
   FILE *csvFile;
-  char string[200];
-  char row[50];
-  char *tmp;
   char *fileName;
   int i = 0;
 
@@ -29,6 +27,37 @@ void main() {
   csvFile = openFile(fileName, "r", ".csv");
 
   free(fileName);
+
+  instanceTable = parseCsv(csvFile);
+
+  sortDescOrder(instanceTable, 25);
+
+  printf("\n\n");
+
+  for(i = 0; i < 25; i++) {
+    printf("%s %i\n", instanceTable[i].text, instanceTable[i].score);
+  }
+
+	free(instanceTable);
+  fclose(csvFile);
+  system("pause");
+}
+
+char *inputText(char printText[], int inputLength) {
+  char *input = (char*) malloc(inputLength * sizeof(char));
+
+  printf("%s", printText);
+  gets(input);
+
+  return input;
+}
+
+Instance *parseCsv(FILE *csvFile) {
+  Instance *instanceTable = (Instance *) malloc(25 * sizeof(Instance));
+  
+    char string[200];
+    char *tmp;
+    int i = 0;
 
   while (fgets(string, sizeof(string), csvFile) != NULL) {
     tmp = strtok(string, ",");
@@ -42,25 +71,7 @@ void main() {
     i++;
   }
 
-  sortDescOrder(instanceTable, 25);
-
-  printf("\n\n");
-
-  for(i = 0; i < 25; i++) {
-    printf("%s %i\n", instanceTable[i].text, instanceTable[i].score);
-  }
-
-  fclose(csvFile);
-  system("pause");
-}
-
-char *inputText(char printText[], int inputLength) {
-  char *input = (char*) malloc(inputLength * sizeof(char));
-
-  printf("%s", printText);
-  gets(input);
-
-  return input;
+  return instanceTable;
 }
 
 FILE *openFile(char fileName[], char accessMode[], char extension[]) {
